@@ -59,6 +59,21 @@ def update_dress_data():
         return ("System is under maintanance")
     return ("Please check your data and load again")
 
+@app.route('/delete_dress', methods=['GET','POST'])
+def delete_dress_data():
+    print("START Delete data ")
+    try:
+        Dress_ID = request.json['Dress_ID']
+        print( Dress_ID )
+        sql_Delete_query = """Delete from sales.dress_dataset where Dress_ID = %s"""
+        cursor.execute(sql_Delete_query, (Dress_ID,))
+        mydb.commit()
+        return ("Succcessfully Deleted data")
+    except Exception as e:
+        print(e)
+        return ("System is under maintanance")
+    return ("Please check your data and load again")
+
 @app.route('/abc', methods= ['GET','POST'])
 def test1():
     print("test1------")
