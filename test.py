@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify
 import mysql.connector as conn
 import pymongo
+from bson import json_util, ObjectId
+import json
+
+
 
 app=  Flask(__name__)
 
@@ -23,15 +27,18 @@ def load_dress_data_mangodb():
         return ("System is under maintanance")
     return ("Please check your data and load again")
 
-@app.route('/update_dress_mongodb', methods=['GET','POST'])
-def load_dress_data_mangodb():
+@app.route('/fetch_dress_mongodb', methods=['GET','POST'])
+def fetch_dress_data_mangodb():
     print("START loading data ")
     try:
-        json_data = request.get_json()
-        print(json_data)
+        Dress_ID = request.args.get('Dress_ID', None)
+        print(Dress_ID)
         dress_table = mongodb['dress_set']
-        dress_table.insert_one(json_data)
-        return ("Succcessfully Data Loaded")
+        d = {
+            "Dress_ID": Dress_ID
+        }
+        page_sanitized = json.loads(json_util.dumps(dress_table.find_one(d)))
+        return jsonify(page_sanitized)
     except Exception as e:
         print(e)
         return ("System is under maintanance")
